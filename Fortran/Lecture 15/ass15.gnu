@@ -38,7 +38,8 @@ plot "ass15.txt" using (bin($1)*bin_width+xmin):(1.0) smooth frequency with boxe
 set term png
 set output "ECDF.png"
 set title "Emperical Cumulative Distribution Function"
-# set xlabel "Time"
+set xlabel 'x'
+set ylabel 'r/M'
 plot "C(x).txt" using 1:2 with points notitle
 
 # plot.plt

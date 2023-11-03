@@ -15,18 +15,15 @@ PROGRAM assign15
     IMPLICIT NONE
     INTEGER :: i, ios, N, j, Nbin, M
     REAL, ALLOCATABLE :: randn(:), H(:), parr(:), xp(:)
-    REAL :: xmin, xmax, dx, temp, C25, C75, IQR, fdr_dx, Cmax, Cmin
+    REAL :: C25, C75, IQR, fdr_dx, Cmax, Cmin
     
     
-    xmin = -10.0
-    xmax = 10.0
     N = 10E4
-    dx = (xmax-xmin)/(N*1.0)
     ALLOCATE(randn(N))
-    ALLOCATE(H(N))
-    H = 0.0
 
     CALL rejection(N, randn)
+
+
 
     !data for plotting the datapoints (trial vs. points)
     OPEN(UNIT=10, IOSTAT = ios, FILE = 'fx.txt', ACTION ='WRITE')       
@@ -40,32 +37,28 @@ PROGRAM assign15
             END IF
     
     CALL sort(randn, N)
-
-    DO i = 1, N
-        j = FLOOR((randn(i)-xmin)/dx) + 1
-        H(j) = H(j) + 1
-    END DO
+       
 
     !data for plotting the emperical cumulative distribution
     OPEN(UNIT=10, IOSTAT = ios, FILE = 'C(x).txt', ACTION ='WRITE')       
             IF (ios == 0) THEN
-                temp = H(1)
                 DO i = 1, N
-                    WRITE(10, *) xmin + ((i-0.5)*dx), temp/(10E4)
-                    temp = temp + H(i) 
+                    DO j = 1, N
+                        IF (randn(i) < randn(j)) EXIT
+                    END DO
+                    WRITE(10, *) randn(i), (j-1)/(N*1.0)
                 END DO
                 CLOSE(10)
             ELSE
                     PRINT '(a25)', 'Error: file not opened.'
             END IF
-    DEALLOCATE(H)
 
-    !Number 2    
+    !Number 2
+    Cmin = randn(1)
+    Cmax = randn(N) 
     C25 = randn(FLOOR(N/4.0))
     C75 = randn(FLOOR(3*N/4.0))
     IQR = C75 - C25
-    Cmin = randn(1)
-    Cmax = randn(N)
 
     fdr_dx = IQR*(2/(N)**(1/3.0))
     Nbin = FLOOR((Cmax-Cmin)/fdr_dx) + 1
@@ -96,7 +89,7 @@ PROGRAM assign15
 
     !PRINT*, "SUCCESS"
     DO i = 1, M
-        xp(i) = xmin + i*(xmax-xmin)/(1.0*M)
+        xp(i) = Cmin + i*(Cmax-Cmin)/(1.0*M)
     END DO     
     !PRINT*, "SUCCESS"
     CALL p(xp, randn, IQR, N, M, parr)
