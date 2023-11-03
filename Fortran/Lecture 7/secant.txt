@@ -1,0 +1,10 @@
+ Secant Method
+ Secant Method
+ iteration    calc_root    epsilon      
+           1   10.0000000       2.00819254    
+           2   7.99180746      0.212459087    
+           3   8.20426655       6.69574738E-03
+           4   8.21096230       2.86102295E-05
+ The root is:    8.21093273    
+ with an error of   9.53674316E-07
+ in            5  iteration.

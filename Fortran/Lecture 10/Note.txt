@@ -1,0 +1,1 @@
+I was not able to code correctly the algorithm of midpoint method and G. Fux revised my code on that part. You will notice it in the plot produced. 
